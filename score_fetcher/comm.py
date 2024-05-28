@@ -23,6 +23,7 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
             # re
             self.send_response(200)
             self.send_header('Content-Type', 'application/json')
+            self.send_header('Access-Control-Allow-Origin', '*')
             self.end_headers()
 
             # Return json, even though it came in as POST URL params
@@ -36,6 +37,7 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
         if re.search('/api/get/score', self.path):
                 self.send_response(200)
                 self.send_header('Content-Type', 'application/json')
+                self.send_header('Access-Control-Allow-Origin', '*')
                 self.end_headers()
 
                 # Return json, even though it came in as POST URL params

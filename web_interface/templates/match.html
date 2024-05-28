@@ -20,6 +20,9 @@
             text-decoration: underline;
             color: #007bff;
         }
+        h1 a:hover {
+            cursor: pointer;
+        }
         nav {
             display: flex;
             justify-content: space-between;
@@ -78,7 +81,7 @@
 <body>
     <nav>
         <h1><a href="/">All scores</a></h1>
-        <h1><a id="refresh" href="/match">New Match</a></h1>
+        <h1><a id="refresh" onclick="requestReset()">New Match</a></h1>
     </nav>
     <h1>Live Babyfoot Scores</h1>
 
@@ -130,7 +133,7 @@
             })
             .catch(error => console.error('Error creating match:', error));
         }
-        
+
         function requestReset() {
             fetch('http://localhost:8000/api/post/reset', {
                 method: 'POST'})
