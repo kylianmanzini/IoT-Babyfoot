@@ -4,6 +4,7 @@ BLEService babyfootService("fff0");
 
 BLEIntCharacteristic goal("fff1", BLERead | BLEBroadcast);
 BLEBooleanCharacteristic batteryLow("fff2", BLERead | BLEBroadcast);
+BLEBooleanCharacteristic resetGame("fff3", BLEWrite | BLERead | BLENotify);
 
 // Advertising parameters should have a global scope. Do NOT define them in 'setup' or in 'loop'
 const uint8_t manufactData[4] = {0x01, 0x02, 0x03, 0x04};
@@ -11,6 +12,9 @@ const uint8_t serviceData[2] = {0x00, 0x01};
 
 // Build advertising data packet
 BLEAdvertisingData advData;
+
+int sensorPin = A1;
+#define PIEZO_THRESHOLD 200
 
 void setup() {
   Serial.begin(9600);
@@ -23,6 +27,7 @@ void setup() {
 
   babyfootService.addCharacteristic(goal);
   babyfootService.addCharacteristic(batteryLow);
+  babyfootService.addCharacteristic(resetGame);
 
   BLE.addService(babyfootService);
 
@@ -65,6 +70,7 @@ void blePeripheralDisconnectHandler(BLEDevice central) {
 
 
 static int localGoal = 0;
+static int localReset = 0;
 
 void scoreGoal(){
   localGoal = localGoal + 1;
@@ -79,11 +85,19 @@ void resetGoal(){
 void loop() {
   BLE.poll();
 
-  scoreGoal();
+  if(resetGame.value()){
+    Serial.println("Game reset");
+    resetGoal();
+    resetGame.writeValue(false);
+  }
+
+  if(analogRead(sensorPin) > PIEZO_THRESHOLD){
+    Serial.println("GOAL!!!");
+    scoreGoal();
+    delay(1000);
+  }
 
   checkBattery();
-
-  delay(1000);
 }
 
 bool isBatteryLow = false;
