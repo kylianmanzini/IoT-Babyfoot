@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Babyfoot Scores</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        h1 {
+            margin: 10px 0;
+            color: #007bff;
+        }
+        h1 a {
+            text-decoration: underline;
+            color: #007bff;
+        }
+        nav {
+            display: flex;
+            justify-content: space-between;
+        }
+        #information {
+            margin: 20px 0;
+            font-size: 34px;
+            color: #000000;
+        }
+        .scoreboard {
+            display: flex;
+            flex-direction: column;
+            width: 50%;
+            margin: 5vh auto;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .scoreboard .line {
+            display: flex;
+            justify-content: space-around;
+            border-bottom: 1px solid #ccc;
+        }
+        .scoreboard .head, .scoreboard .body {
+            padding: 10px;
+            font-size: 44px;
+        }
+        .team {
+            font-weight: bold;
+            background-color: #f2f2f2;
+        }
+        .score {
+            font-size: 48px;
+            color: #007bff;
+        }
+        .match-date {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #555;
+        }
+        #done_button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 18px;
+            color: #fff;
+            background-color: #28a745;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #done_button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <h1><a href="/">All scores</a></h1>
+        <h1><a id="refresh" href="/match">Refresh</a></h1>
+    </nav>
+    <h1>Live Babyfoot Scores</h1>
+
+    <div id="information"></div>
+    
+    <button id="done_button" onclick="createMatch()">Finish and register match</button>
+
+    <div class="scoreboard">
+        <div class="line">
+            <div class="team head" id="team1_name">Team 1</div>
+            <div class="head"> - </div>
+            <div class="team head" id="team2_name">Team 2</div>
+        </div>
+        <div class="line">
+            <div class="score body" id="team1_score">0</div>
+            <div class="body"> - </div>
+            <div class="score body" id="team2_score">0</div>
+        </div>
+    </div>
+    <div class="match-date" id="match_date">Match Date</div>
+
+    <script>
+        function createMatch() {
+            clearInterval(fetchLatestScore);
+            document.getElementById('refresh').innerText = 'New Match';
+            fetch('/create_match', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    team1_name: 'Team 1',
+                    team2_name: 'Team 2',
+                    team1_score: document.getElementById('team1_score').innerText,
+                    team2_score: document.getElementById('team2_score').innerText,
+                    match_date: document.getElementById('match_date').innerText
+                })
+            })
+            .then(response => {
+                console.log("Server create response : ") 
+                console.log(response)
+                if (response.ok) {
+                    document.getElementById('information').innerText = 'Match registered';
+                    document.getElementById('information').style.display = 'block';
+                    document.getElementById('done_button').style.display = 'none';
+                } else {
+                    document.getElementById('information').innerText = 'Error registering match';
+                    document.getElementById('information').style.display = 'block';
+                }
+            })
+            .catch(error => console.error('Error creating match:', error));
+        }
+        function fetchLatestScore() {
+            fetch('http://localhost:8000/api/get/score')
+                .then(response => 
+                    response.json()
+                )
+                .then(data => {
+                    document.getElementById('team1_score').innerText = data.team1_score;
+                    document.getElementById('team2_score').innerText = data.team2_score;
+                    document.getElementById('match_date').innerText = new Date().toLocaleString();
+                    document.querySelector('.scoreboard').style.display = 'block';
+                })
+                .catch(error => {
+                    console.log(error)
+                    document.querySelector('.error').innerText = 'No current match in progress';
+                    document.querySelector('.scoreboard').style.display = 'none';
+                });
+        }
+
+        setInterval(fetchLatestScore, 3000); // Fetch latest score every 3 seconds
+        fetchLatestScore(); // Initial fetch
+    </script>
+</body>
+</html>

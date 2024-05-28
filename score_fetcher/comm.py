@@ -6,11 +6,9 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 
 
 scoreboard = {
-    "score_equipe1" : 1,
-    "score_equipe2" : 1
+    "team1_score" : 1,
+    "team2_score" : 1
 }
-
-
 
 class HTTPRequestHandler(BaseHTTPRequestHandler):
     def do_POST(self):
@@ -27,6 +25,7 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
         if re.search('/api/get/score', self.path):
                 self.send_response(200)
                 self.send_header('Content-Type', 'application/json')
+                self.send_header('Access-Control-Allow-Origin', '*')
                 self.end_headers()
 
                 # Return json, even though it came in as POST URL params
@@ -38,7 +37,6 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
 
         
 if __name__ == '__main__':
-    print("caca\n")
     server = HTTPServer(('localhost', 8000), HTTPRequestHandler)
     logging.info('Starting httpd...\n')
     try:

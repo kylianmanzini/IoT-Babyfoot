@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Babyfoot Scores</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        h1 {
+            margin: 10px 0
+            color: #007bff;
+        }
+        h1 a {
+            text-decoration: underline;
+            color: #007bff;
+        }
+        nav {
+            display: flex;
+            justify-content: space-between;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: auto auto;
+            font-size: 18px;
+            text-align: left;
+        }
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <h1><a href="/match">Live Match</a></h1>
+    </nav>
+    <h1>Babyfoot Scores</h1>
+    <table>
+        <tr>
+            <th>Team 1</th>
+            <th>Team 2</th>
+            <th>Team 1 Score</th>
+            <th>Team 2 Score</th>
+            <th>Match Date</th>
+        </tr>
+        {% for score in scores %}
+        <tr>
+            <td>{{ score[0] }}</td>
+            <td>{{ score[1] }}</td>
+            <td>{{ score[2] }}</td>
+            <td>{{ score[3] }}</td>
+            <td>{{ score[4] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
