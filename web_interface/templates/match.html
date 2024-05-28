@@ -78,7 +78,7 @@
 <body>
     <nav>
         <h1><a href="/">All scores</a></h1>
-        <h1><a id="refresh" href="/match">Refresh</a></h1>
+        <h1><a id="refresh" href="/match">New Match</a></h1>
     </nav>
     <h1>Live Babyfoot Scores</h1>
 
@@ -103,7 +103,6 @@
     <script>
         function createMatch() {
             clearInterval(fetchLatestScore);
-            document.getElementById('refresh').innerText = 'New Match';
             fetch('/create_match', {
                 method: 'POST',
                 headers: {
@@ -131,6 +130,20 @@
             })
             .catch(error => console.error('Error creating match:', error));
         }
+        
+        function requestReset() {
+            fetch('http://localhost:8000/api/post/reset', {
+                method: 'POST'})
+                .then(() => {
+                    location.reload()
+                })
+                .catch(error => {
+                    console.error('Error resetting match:', error)
+                    document.getElementById('information').innerText = 'Error resetting match';
+                })
+        }
+                
+
         function fetchLatestScore() {
             fetch('http://localhost:8000/api/get/score')
                 .then(response => 
