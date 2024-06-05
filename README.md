@@ -72,16 +72,10 @@ The system consists of two main components: the Arduino-based score detection sy
       ```
 
 3. **Running the Webservers:**
-    - Start the webserver to display game information:
+    - Start the webservers using the bash script:
 
       ```sh
-      python3 web_interface/app.py
-      ```
-
-    - Start the webserver to listen for score updates:
-
-      ```sh
-      python3 score_fetcher/comm.py
+      ./babyfoot_startup.sh
       ```
 
 ## Usage
